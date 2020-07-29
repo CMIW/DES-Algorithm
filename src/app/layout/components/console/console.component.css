@@ -1,0 +1,11 @@
+p{
+  background-color: #2b3037;
+  margin: 2%;
+  padding-left: 2%;
+  border-radius: 5px;
+  height: 780px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  white-space: pre-line;
+  overflow-y: scroll;
+}

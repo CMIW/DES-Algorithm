@@ -1,0 +1,16 @@
+<form [formGroup]="form" fxLayout="column">
+  <mat-form-field class="example-full-width" fxFlexAlign="center">
+    <mat-label>Mensaje</mat-label>
+    <input matInput formControlName="Message">
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width" fxFlexAlign="center">
+    <mat-label>Llave</mat-label>
+    <input matInput formControlName="Key">
+  </mat-form-field>
+
+  <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-evenly">
+    <button mat-raised-button (click)="encrypt()">Encriptar</button>
+    <button mat-raised-button (click)="decrypt()">Desencriptar</button>
+  </div>
+</form>
