@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { KeygeneratorService } from '../keygenerator/keygenerator.service';
 import { ConsoleService } from '../console/console.service';
 import { UtilityService } from '../utility/utility.service';
+import { CajasService } from '../cajas/cajas.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,13 +11,14 @@ export class DESService {
 
   constructor(private console:ConsoleService,
     private keygenerator:KeygeneratorService,
-    private utilityService:UtilityService) { }
+    private utilityService:UtilityService,
+    private cajasService:CajasService) { }
 
   start(pMessage:number[], pKeys:any[]){
     var message:string = this.utilityService.printBits(pMessage);
 
-    this.console.log("\n\nEncrypting Message ...");
-    this.console.log("\n\nApplying IP to Message ...");
+    this.console.log("\n\nEncriptando el Mensaje ...");
+    this.console.log("\n\nAplicando funcion IP al Mensaje ...");
     pMessage = this.IP(pMessage);
     message = this.utilityService.printBits(pMessage);
     this.console.log("\n"+message);
@@ -27,22 +29,43 @@ export class DESService {
     this.console.log("\nR0: "+this.utilityService.printBits(R0));
 
     for(var i = 0; i < 16; i++){
-      this.console.log("\n\nIteration #"+(i+1));
+      this.console.log("\n\nIteracion #"+(i+1));
       var L1:number[] = L0;
       var R1:number[] = R0;
 
       this.console.log("\nExpansion ...");
-      L0 = this.expansion(L0);
+      //L0 = this.expansion(L0);
       R0 = this.expansion(R0);
       this.console.log("\nR"+i+": "+this.utilityService.printBits(R0));
 
-      this.console.log("\n\nXor R"+i+" y Key "+i+" . . . ");
-      this.console.log("\nKey: "+ this.utilityService.printBits(pKeys[i]));
+      this.console.log("\n\nXor R"+i+" y Llave #"+i+" . . . ");
+      this.console.log("\nLLave: "+ this.utilityService.printBits(pKeys[i]));
       this.console.log("\nR"+i+": "+ this.utilityService.printBits(R0));
       R0 = this.utilityService.xor(R0,pKeys[i]);
+      this.console.log("\n_________________________________________________________________________");
       this.console.log("\nR"+i+": "+ this.utilityService.printBits(R0));
 
-      this.sextetPermutation(R0,[1]);
+      this.console.log("\n\nAgrupación en 6 . . . ");
+      this.console.log("\nR"+i+": "+ this.utilityService.printBits6(R0));
+
+      this.console.log("\n\nAplicando cajas a  R"+i+" . . .");
+      R0 = this.aplicarCajas(R0);
+      this.console.log("\nR"+i+": "+ this.utilityService.printBits(R0));
+
+      this.console.log("\n\nPermutando R"+i+" . . .");
+      R0 = this.permutacion(R0);
+      this.console.log("\nR"+i+": "+ this.utilityService.printBits(R0));
+
+      L1 = R1;
+      this.console.log("\n\nXOR L"+i+" con f(R"+i+", K"+i+") . . .");
+      this.console.log("\nL"+i+": "+ this.utilityService.printBits(L0));
+      this.console.log("\nR"+i+": "+ this.utilityService.printBits(R0));
+      R1 = this.utilityService.xor(L0,R0);
+      this.console.log("\n_________________________________________________________________________");
+      this.console.log("\nR"+(i+1)+": "+ this.utilityService.printBits(R1));
+
+      L0 = L1;
+      R0 = R1;
     }
   }
 
@@ -72,12 +95,35 @@ export class DESService {
         ];
   }
 
-  sextetPermutation(arrayBits:number[], cajaS:number[]){
-    var row:number[] = [0,0];
-    row = row.concat(arrayBits[0]);
-    row = row.concat(arrayBits[5]);
-    var nRow:number = this.utilityService.bytetoNumber(row);
-    console.log(row);
-    console.log(nRow);
+  aplicarCajas(arrayBits:number[]){
+    var sol:any = [];
+    sol = sol.concat(this.sextetPermutation(arrayBits.slice(0,6),this.cajasService.getCaja(1)));
+    sol = sol.concat(this.sextetPermutation(arrayBits.slice(6,12),this.cajasService.getCaja(2)));
+    sol = sol.concat(this.sextetPermutation(arrayBits.slice(12,18),this.cajasService.getCaja(3)));
+    sol = sol.concat(this.sextetPermutation(arrayBits.slice(18,24),this.cajasService.getCaja(4)));
+    sol = sol.concat(this.sextetPermutation(arrayBits.slice(24,30),this.cajasService.getCaja(5)));
+    sol = sol.concat(this.sextetPermutation(arrayBits.slice(30,36),this.cajasService.getCaja(6)));
+    sol = sol.concat(this.sextetPermutation(arrayBits.slice(36,42),this.cajasService.getCaja(7)));
+    sol = sol.concat(this.sextetPermutation(arrayBits.slice(42,48),this.cajasService.getCaja(8)));
+    return sol;
+  }
+
+  permutacion(bloque:number[]){
+    return [
+        bloque[16-1],bloque[7-1],bloque[20-1],bloque[21-1],
+        bloque[29-1],bloque[12-1],bloque[28-1],bloque[17-1],
+        bloque[1-1],bloque[15-1],bloque[23-1],bloque[26-1],
+        bloque[5-1],bloque[18-1],bloque[31-1],bloque[10-1],
+        bloque[2-1],bloque[8-1],bloque[24-1],bloque[14-1],
+        bloque[32-1],bloque[27-1],bloque[3-1],bloque[9-1],
+        bloque[19-1],bloque[13-1],bloque[30-1],bloque[6-1],
+        bloque[22-1],bloque[11-1],bloque[4-1],bloque[25-1]
+        ];
+  }
+
+  sextetPermutation(arrayBits:number[], cajaS:any){
+    var nRow:number = this.utilityService.bytetoNumber([0,0,arrayBits[0],arrayBits[5]]);
+    var nCol:number = this.utilityService.bytetoNumber(arrayBits.slice(1,-1));
+    return this.utilityService.numbertoByte(cajaS[nRow][nCol]).slice(4,8);
   }
 }
