@@ -32,12 +32,12 @@ export class BoardComponent implements OnInit {
 
     var keys:any[] = [];
 
-    this.console.log("\nMessage: \n"+this.utilityService.printBits(message));
-    this.console.log("\nKey: \n"+this.utilityService.printBits(key));
+    this.console.log("\nMensaje: \n"+this.utilityService.printBits(message));
+    this.console.log("\nLLave: \n"+this.utilityService.printBits(key));
 
     this.keygenerator.generateKeys(key);
     keys = this.keygenerator.getKeys();
-    
+
     this.dessService.start(message, keys);
   }
 

@@ -74,7 +74,7 @@ export class UtilityService {
       residuo.push(number%2);
       number = (number/2) >> 0;
     }
-    if(residuo.length%2 != 0){
+    while(residuo.length%2 != 0 || residuo.length < 8){
       residuo.push(0);
     }
     return residuo.reverse();

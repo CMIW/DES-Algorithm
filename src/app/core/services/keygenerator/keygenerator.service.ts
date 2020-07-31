@@ -12,7 +12,7 @@ export class KeygeneratorService {
     private utilityService:UtilityService) { }
 
   generateKeys(key:number[]){
-    this.console.log("\n\nGenerating DES Keys ...");
+    this.console.log("\n\nGenerando las llaves para DES ...");
     this.console.log("\nPC1:");
     var keyArray:number[] = this.P1(key);
     this.console.log("\n" + this.utilityService.printBits(keyArray));
@@ -20,7 +20,7 @@ export class KeygeneratorService {
     var D0:number[] = keyArray.slice((keyArray.length/2)>>0,keyArray.length);
     this.console.log("\n\nC0: "+this.utilityService.printBits(C0));
     this.console.log("\nD0: "+this.utilityService.printBits(D0));
-    this.console.log("\n\nShifting Keys ...");
+    this.console.log("\n\nAplicando el shift a las llaves ...");
     keyArray = this.shift(C0,D0);
     keyArray = this.transponer(keyArray);
     this.printKeys(keyArray);
@@ -32,7 +32,7 @@ export class KeygeneratorService {
   }
 
   printKeys(array:any[]){
-    this.console.log("\n\nKeys:");
+    this.console.log("\n\nLLaves:");
     for(var i = 0; i < array.length; i++){
       this.console.log("\n" + this.utilityService.printBits(array[i]));
     }
