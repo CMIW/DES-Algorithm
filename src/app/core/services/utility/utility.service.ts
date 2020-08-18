@@ -19,6 +19,7 @@ export class UtilityService {
     var sol:string = "";
     for(var i = 0; i < array.length; i = i + 8){
       sol += String.fromCharCode(this.bytetoNumber(array.slice(i, i + 8)));
+      console.log(String.fromCharCode(this.bytetoNumber(array.slice(i, i + 8))));
     }
     return sol
   }

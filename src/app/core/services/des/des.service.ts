@@ -15,13 +15,10 @@ export class DESService {
     private cajasService:CajasService) { }
 
   start(pMessage:number[], pKeys:any[]){
-    var message:string = this.utilityService.printBits(pMessage);
-
     this.console.log("\n\nEncriptando el Mensaje ...");
     this.console.log("\n\nAplicando funcion IP al Mensaje ...");
     pMessage = this.IP(pMessage);
-    message = this.utilityService.printBits(pMessage);
-    this.console.log("\n"+message);
+    this.console.log("\n"+this.utilityService.printBits(pMessage));
 
     var L0:number[] = pMessage.slice(0,(pMessage.length/2)>>0);
     var R0:number[] = pMessage.slice((pMessage.length/2)>>0,pMessage.length);
@@ -67,6 +64,12 @@ export class DESService {
       L0 = L1;
       R0 = R1;
     }
+    this.console.log("\n\nAplicando IP^-1 . . .");
+    var sol:number[] = this.IP_1(R0.concat(L0));
+    this.console.log("\nMensaje: "+ this.utilityService.printBits(sol));
+    var message:string = this.utilityService.arraytoString(sol);
+    this.console.log("\nMensaje: "+ message);
+    return message;
   }
 
   IP(bloque:number[]){
@@ -125,5 +128,18 @@ export class DESService {
     var nRow:number = this.utilityService.bytetoNumber([0,0,arrayBits[0],arrayBits[5]]);
     var nCol:number = this.utilityService.bytetoNumber(arrayBits.slice(1,-1));
     return this.utilityService.numbertoByte(cajaS[nRow][nCol]).slice(4,8);
+  }
+
+  IP_1(bloque:number[]){
+    return [
+        bloque[40-1],bloque[8-1],bloque[48-1],bloque[16-1],bloque[56-1],bloque[24-1],bloque[64-1],bloque[32-1],
+        bloque[39-1],bloque[7-1],bloque[47-1],bloque[15-1],bloque[55-1],bloque[23-1],bloque[63-1],bloque[31-1],
+        bloque[38-1],bloque[6-1],bloque[46-1],bloque[14-1],bloque[54-1],bloque[22-1],bloque[62-1],bloque[30-1],
+        bloque[37-1],bloque[5-1],bloque[45-1],bloque[13-1],bloque[53-1],bloque[21-1],bloque[61-1],bloque[29-1],
+        bloque[36-1],bloque[4-1],bloque[44-1],bloque[12-1],bloque[52-1],bloque[20-1],bloque[60-1],bloque[28-1],
+        bloque[35-1],bloque[3-1],bloque[43-1],bloque[11-1],bloque[51-1],bloque[19-1],bloque[59-1],bloque[27-1],
+        bloque[34-1],bloque[2-1],bloque[42-1],bloque[10-1],bloque[50-1],bloque[18-1],bloque[58-1],bloque[26-1],
+        bloque[33-1],bloque[1-1],bloque[41-1],bloque[9-1],bloque[49-1],bloque[17-1],bloque[57-1],bloque[25-1],
+        ];
   }
 }

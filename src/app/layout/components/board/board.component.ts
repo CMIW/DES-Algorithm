@@ -29,7 +29,7 @@ export class BoardComponent implements OnInit {
     this.console.clear();
     var message:number[] = this.utilityService.stringtoByteArray(this.form.value.Message);
     var key:number[] = this.utilityService.stringtoByteArray(this.form.value.Key);
-
+    //key = [0,0,0,1, 0,0,1,0, 0,0,1,1, 0,1,0,0, 0,1,0,1, 0,1,1,0, 0,1,1,1, 1,0,0,0, 1,0,0,1, 1,0,1,0, 1,0,1,1, 1,1,0,0, 1,1,0,1, 1,1,1,0, 1,1,1,1, 0,0,0,1];
     var keys:any[] = [];
 
     this.console.log("\nMensaje: \n"+this.utilityService.printBits(message));
@@ -38,12 +38,23 @@ export class BoardComponent implements OnInit {
     this.keygenerator.generateKeys(key);
     keys = this.keygenerator.getKeys();
 
-    this.dessService.start(message, keys);
+    this.form.setValue({Message:this.dessService.start(message, keys), Key: this.form.value.Key});
   }
 
   decrypt(){
     this.console.clear();
-    this.console.log(this.utilityService.arraytoString(this.utilityService.stringtoByteArray(this.form.value.Message)));
+    var message:number[] = this.utilityService.stringtoByteArray(this.form.value.Message);
+    var key:number[] = this.utilityService.stringtoByteArray(this.form.value.Key);
+
+    var keys:any[] = [];
+
+    this.console.log("\nMensaje: \n"+this.utilityService.printBits(message));
+    this.console.log("\nLLave: \n"+this.utilityService.printBits(key));
+
+    this.keygenerator.generateKeys(key);
+    keys = this.keygenerator.getKeys().reverse();
+
+    this.form.setValue({Message:this.dessService.start(message, keys), Key: this.form.value.Key});
   }
 
 }
