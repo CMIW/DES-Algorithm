@@ -54,7 +54,7 @@ export class UtilityService {
     return bits
   }
 
-  chartoByte(char){
+  chartoByte(char:string){
     return this.numbertoByte(char.charCodeAt(0));
   }
 
