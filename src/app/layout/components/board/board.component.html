@@ -1,16 +1,22 @@
 <form [formGroup]="form">
-  <mat-form-field class="example-full-width">
-    <mat-label>Mensaje</mat-label>
-    <input matInput formControlName="Message">
-  </mat-form-field>
+  <div class="row justify-content-around">
+    <mat-form-field class="col-md-auto">
+      <mat-label>Mensaje</mat-label>
+      <input matInput formControlName="Message" maxlength="8" minlength="8">
+    </mat-form-field>
 
-  <mat-form-field class="example-full-width">
-    <mat-label>Llave</mat-label>
-    <input matInput formControlName="Key">
-  </mat-form-field>
+    <mat-form-field class="col-md-auto">
+      <mat-label>Llave</mat-label>
+      <input matInput formControlName="Key" maxlength="8" minlength="8">
+    </mat-form-field>
+  </div>
 
-  <div>
-    <button mat-raised-button (click)="encrypt()">Encriptar</button>
-    <button mat-raised-button (click)="decrypt()">Desencriptar</button>
+  <div class="row justify-content-around">
+    <button mat-raised-button color="primary" (click)="encrypt()" class="col-md-auto">
+      Encriptar
+    </button>
+    <button mat-raised-button color="primary" (click)="decrypt()" class="col-md-auto">
+      Desencriptar
+    </button>
   </div>
 </form>
